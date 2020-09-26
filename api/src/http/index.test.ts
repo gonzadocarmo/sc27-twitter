@@ -7,27 +7,28 @@ const mockAdapter = new axiosMockAdapter(axios);
 
 describe("http", () => {
   const request = {
-    url: "www.google.com"
+    url: "/some"
+  };
+  const headers = {
+    Accept: "application/json, text/plain, */*",
+    authorization: "Bearer my-token"
+  };
+  const HEADERS_JSON = {
+    ...headers,
+    "Content-Type": "application/json;charset=utf-8"
   };
 
   beforeEach(() => jest.clearAllMocks());
 
   it("should make GET request", async () => {
-    mockAdapter.onGet("www.google.com").reply(200);
+    mockAdapter.onGet("www.google.com/some", undefined, headers).reply(200);
 
     await callAPI(request);
   });
 
   it("should make POST request with proper headers and body", async () => {
     mockAdapter
-      .onPost(
-        "www.google.com",
-        { a: 1, b: 2 },
-        {
-          Accept: "application/json, text/plain, */*",
-          "Content-Type": "application/json;charset=utf-8"
-        }
-      )
+      .onPost("www.google.com/some", { a: 1, b: 2 }, HEADERS_JSON)
       .reply(200);
 
     await callAPI({ ...request, method: "POST", data: { a: 1, b: 2 } });
@@ -35,32 +36,29 @@ describe("http", () => {
 
   it("should make PUT request with proper headers and body", async () => {
     mockAdapter
-      .onPut(
-        "www.google.com?id=1",
-        { c: 3 },
-        {
-          Accept: "application/json, text/plain, */*",
-          "Content-Type": "application/json;charset=utf-8"
-        }
-      )
+      .onPut("www.google.com/some?id=1", { c: 3 }, HEADERS_JSON)
       .reply(200);
 
     await callAPI({
-      url: "www.google.com?id=1",
+      url: "/some?id=1",
       method: "PUT",
       data: { c: 3 }
     });
   });
 
   it("should make DELETE request with proper headers and body", async () => {
-    mockAdapter.onDelete("www.google.com?id=1").reply(200);
+    mockAdapter
+      .onDelete("www.google.com/some?id=1", undefined, headers)
+      .reply(200);
 
-    await callAPI({ url: "www.google.com?id=1", method: "DELETE" });
+    await callAPI({ url: "/some?id=1", method: "DELETE" });
   });
   describe("when success service response", () => {
     it("should return response from service", async () => {
       const serviceResponse = { a: 1 };
-      mockAdapter.onGet("www.google.com").reply(200, serviceResponse);
+      mockAdapter
+        .onGet("www.google.com/some", undefined, headers)
+        .reply(200, serviceResponse);
 
       const result = await callAPI(request);
 
@@ -70,7 +68,9 @@ describe("http", () => {
   describe("when error service response", () => {
     describe("when network error", () => {
       it('should return rejected promise with "Network Error" error', async () => {
-        mockAdapter.onGet("www.google.com").networkError();
+        mockAdapter
+          .onGet("www.google.com/some", undefined, headers)
+          .networkError();
         expect.assertions(1);
         try {
           await callAPI(request);
@@ -81,7 +81,7 @@ describe("http", () => {
     });
     describe("when timeout error", () => {
       it('should return rejected promise with "timeout of 0ms exceeded" error', async () => {
-        mockAdapter.onGet("www.google.com").timeout();
+        mockAdapter.onGet("www.google.com/some", undefined, headers).timeout();
         expect.assertions(1);
         try {
           await callAPI(request);
@@ -99,7 +99,7 @@ describe("http", () => {
         it("should return rejected promise with error code and response from service", async () => {
           const errorResponse = { b: 1, c: 0 };
           mockAdapter
-            .onGet("www.google.com")
+            .onGet("www.google.com/some", undefined, headers)
             .reply(httpStatusCode, errorResponse);
           expect.assertions(1);
           try {

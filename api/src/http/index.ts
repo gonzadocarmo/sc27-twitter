@@ -6,6 +6,7 @@ export interface CallAPIType {
   url: string;
   method?: Method;
   data?: any;
+  headers?: {};
 }
 
 interface ServiceResponse {}
@@ -14,12 +15,22 @@ interface Error {
   code: string;
   data: string | ServiceResponse;
 }
-const callAPI: Function = ({
+export const callAPI: Function = ({
   url,
   method = "GET",
-  data
+  data,
+  headers
 }: CallAPIType): Promise<Error | ServiceResponse> => {
-  return axios({ url, method, data })
+  const updatedHeaders = {
+    ...headers,
+    authorization: `Bearer ${process.env.API_TOKEN}`
+  };
+  return axios({
+    url: `${process.env.API_URL}${url}`,
+    method,
+    data,
+    headers: updatedHeaders
+  })
     .then((response: AxiosResponse) => response.data)
     .catch((error: AxiosError) => {
       if (error.response) {
@@ -49,5 +60,3 @@ const callAPI: Function = ({
       }
     });
 };
-
-module.exports = { callAPI };
