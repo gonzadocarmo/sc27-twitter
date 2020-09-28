@@ -1,2 +1,2 @@
-process.env.API_URL = "www.google.com";
-process.env.API_TOKEN = "my-token";
+process.env.TWITTER_API_URL = "www.google.com";
+process.env.TWITTER_ACCESS_TOKEN_BEARER = "my-token";

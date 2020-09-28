@@ -1,20 +1,8 @@
-import { AxiosError, AxiosResponse, Method } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
+import { CallAPIType, ServiceResponse, Error } from "./index.d";
 
-const axios = require("axios");
+import axios from "axios";
 
-export interface CallAPIType {
-  url: string;
-  method?: Method;
-  data?: any;
-  headers?: {};
-}
-
-interface ServiceResponse {}
-
-interface Error {
-  code: string;
-  data: string | ServiceResponse;
-}
 export const callAPI: Function = ({
   url,
   method = "GET",
@@ -23,10 +11,10 @@ export const callAPI: Function = ({
 }: CallAPIType): Promise<Error | ServiceResponse> => {
   const updatedHeaders = {
     ...headers,
-    authorization: `Bearer ${process.env.API_TOKEN}`
+    authorization: `Bearer ${process.env.TWITTER_ACCESS_TOKEN_BEARER}`
   };
   return axios({
-    url: `${process.env.API_URL}${url}`,
+    url: `${process.env.TWITTER_API_URL}${url}`,
     method,
     data,
     headers: updatedHeaders

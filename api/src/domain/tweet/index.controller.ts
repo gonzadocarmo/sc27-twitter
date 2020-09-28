@@ -1,22 +1,20 @@
-import * as yup from "yup";
 import { callAPI } from "../../http";
 import * as querystring from "querystring";
+import { getClient } from "../../http/twiterAdapter";
+import {
+  getTweetsListByCriteriaSchema,
+  createTweetSchema
+} from "./tweet.schema";
+import { createResponseModel } from "./utils";
 
-const getTweetsListByCriteriaSchema = yup.object().shape({
-  keyword: yup.string().required(),
-  lastHours: yup.number().positive().required()
-});
-const createTweetSchema = yup.object().shape({
-  text: yup.string().required().max(150)
-});
 interface IGetTweetsListByCriteria {
   keyword: string;
   lastHours: number;
 }
-
 interface ICreateTweet {
   text: string;
 }
+
 export const getTweetsListByCriteria = async (
   request: IGetTweetsListByCriteria
 ) => {
@@ -30,18 +28,20 @@ export const getTweetsListByCriteria = async (
   })}`;
   const results = await callAPI({ url });
 
-  // TODO: move logic to process response into another file
-  return results.statuses.map((result: any) => ({
-    tweet: {
-      text: result.text,
-      url: result.entities.urls[0]?.url
-    },
-    author: {
-      screenName: result.user.screen_name
-    }
-  }));
+  return (results.statuses || []).map(createResponseModel);
 };
 export const createTweet = async (request: ICreateTweet) => {
   const isValidInput = await createTweetSchema.isValid(request);
   if (!isValidInput) return Promise.reject({ code: "INPUT_VALIDATION" });
+
+  const client = getClient();
+  try {
+    const result = await client.post("statuses/update", {
+      status: request.text
+    });
+    return result.id;
+  } catch (error) {
+    console.log({ error });
+    return Promise.reject({ code: "CLIENT_ERROR" });
+  }
 };

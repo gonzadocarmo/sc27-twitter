@@ -1,10 +1,11 @@
-const router = require("express").Router();
+import { Router } from "express";
 import { getPopularHashtagsByCriteria } from "./domain/hashtag/index.controller";
 import {
   getTweetsListByCriteria,
   createTweet
 } from "./domain/tweet/index.controller";
 
+const router = Router();
 // Retrieve a listing (max 10) tweets that include a keyword in the last n hours
 // a. Inputs: keyword, number of hours
 // b. Outputs: a list of objects containing:
@@ -17,7 +18,8 @@ router.get("/tweet", async (req: any, res: any) => {
     const results = await getTweetsListByCriteria({ keyword, lastHours });
     return res.send(results);
   } catch (error) {
-    return res.send(error);
+    if (error === "INPUT_VALIDATION") return res.sendStatus(400);
+    res.sendStatus(500);
   }
 });
 
@@ -31,7 +33,8 @@ router.get("/hashtag", async (req: any, res: any) => {
     const results = await getPopularHashtagsByCriteria({ keyword });
     return res.send(results);
   } catch (error) {
-    return res.send(error);
+    if (error.code === "INPUT_VALIDATION") return res.sendStatus(400);
+    res.sendStatus(500);
   }
 });
 
@@ -44,10 +47,11 @@ router.get("/hashtag", async (req: any, res: any) => {
 // response from the API should contain only the id of the tweet.
 router.post("/tweet", async (req: any, res: any) => {
   try {
-    await createTweet({ text: req.body });
-    return res.sendStatus(201);
+    const id = await createTweet({ text: req.body.text });
+    return res.json(id);
   } catch (error) {
-    return res.send(error);
+    if (error.code === "INPUT_VALIDATION") return res.sendStatus(400);
+    res.sendStatus(500);
   }
 });
 

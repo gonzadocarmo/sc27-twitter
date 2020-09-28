@@ -1,11 +1,6 @@
-import * as yup from "yup";
 import { callAPI } from "../../http";
 import * as querystring from "querystring";
-
-const schema = yup.object().shape({
-  keyword: yup.string().required()
-});
-
+import { schema } from "./hashtag.schema";
 interface IGetPopularHashtagsByCriteria {
   keyword: string;
 }
