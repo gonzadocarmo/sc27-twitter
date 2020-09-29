@@ -1,14 +1,21 @@
 import React, { Fragment } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { searchHashtags, getHashtags, isLoading } from "./hashtagsKeywordSlice";
+import {
+  searchHashtags,
+  getHashtags,
+  isLoading,
+  getError
+} from "./hashtagsKeywordSlice";
 import { Loader } from "../loader";
 import { HashtagsList } from "./HashtagsKeywordList.component";
 import { SearchForm } from "./HashtagsKeywordSearchForm.component";
+import { Error } from "../error";
 
 import styles from "./HashtagsKeyword.module.css";
 
 export const HashtagsByKeyword = () => {
   const hashtags = useSelector(getHashtags);
+  const error = useSelector(getError);
   const loading = useSelector(isLoading);
 
   const dispatch = useDispatch();
@@ -25,7 +32,8 @@ export const HashtagsByKeyword = () => {
         <Fragment>
           <h3>Hashtags</h3>
           {loading && <Loader />}
-          {!loading && <HashtagsList hashtags={hashtags} />}
+          {!loading && hashtags && <HashtagsList hashtags={hashtags} />}
+          {!loading && error && <Error error={error} />}
         </Fragment>
       </section>
     </div>

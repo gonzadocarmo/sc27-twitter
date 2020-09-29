@@ -1,5 +1,5 @@
 import React from "react";
-import { TweetsByKeyword } from "./features/tweets-keyword/TweetsKeyboard.container";
+import { TweetsByKeyword } from "./features/tweets-keyword/TweetsKeyword.container";
 import { HashtagsByKeyword } from "./features/hashtags-keyword/HashtagsKeyword.container";
 import { CreateTweet } from "./features/tweet/Tweet.container";
 

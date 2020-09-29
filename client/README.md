@@ -27,7 +27,9 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### Notes
+## Notes
 
-- The 3 components are listed on a single page/view.
-- Form Validation has been implemented ONLY on the first component/section ("Tweets by Keyword")
+- The 3 components are listed on the same page/view.
+- Form Validation has been implemented ONLY on the first component/section ("Tweets by Keyword") as an example.
+- Unit tests have been added ONLY on the on the first component/section ("Tweets by Keyword") as an example.
+- Unit tests for `"src/apiCall.js"` have not been added since they're the same as the ones added into the `"api"` module (check `api/src/http/index.test.ts` for reference)

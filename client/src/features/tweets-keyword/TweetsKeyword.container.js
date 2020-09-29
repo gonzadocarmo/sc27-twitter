@@ -1,14 +1,21 @@
 import React, { Fragment } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { searchTweets, getTweets, isLoading } from "./tweetsKeyboardSlice";
+import {
+  searchTweets,
+  getTweets,
+  isLoading,
+  getError
+} from "./tweetsKeywordSlice";
 import { Loader } from "../loader";
-import { TweetsList } from "./TweetsKeyboardList.component";
-import { SearchForm } from "./TweetsKeyboardSearchForm.component";
+import { TweetsList } from "./TweetsKeywordList.component";
+import { SearchForm } from "./TweetsKeywordSearchForm.component";
+import { Error } from "../error";
 
 import styles from "./TweetsKeyword.module.css";
 
 export const TweetsByKeyword = () => {
   const tweets = useSelector(getTweets);
+  const error = useSelector(getError);
   const loading = useSelector(isLoading);
 
   const dispatch = useDispatch();
@@ -28,6 +35,7 @@ export const TweetsByKeyword = () => {
           <h3>Tweets</h3>
           {loading && <Loader />}
           {!loading && <TweetsList tweets={tweets} />}
+          {!loading && error && <Error error={error} />}
         </Fragment>
       </section>
     </div>
