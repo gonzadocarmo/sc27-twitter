@@ -6,12 +6,34 @@ import {
 } from "./domain/tweet/index.controller";
 
 const router = Router();
-// Retrieve a listing (max 10) tweets that include a keyword in the last n hours
-// a. Inputs: keyword, number of hours
-// b. Outputs: a list of objects containing:
-// i. Text of tweet
-// ii. URL of the tweet,
-// iii. The screen name of the author
+
+/**
+ * @swagger
+ *
+ * /tweet:
+ *   get:
+ *     description: Retrieve a listing (max 10) tweets that include a keyword in the last n hours
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: keyword
+ *         description: Keyword contained in tweets
+ *         in: query
+ *         required: true
+ *         type: string
+ *       - name: lastHours
+ *         description: Number of hours within the tweets would be retrieved
+ *         in: query
+ *         required: true
+ *         type: number
+ *     responses:
+ *       200:
+ *         description: list of tweets
+ *       400:
+ *         description: when request is not valid
+ *       500:
+ *         description: when error from service
+ */
 router.get("/tweet", async (req: any, res: any) => {
   try {
     const { keyword, lastHours } = req.query;
@@ -23,10 +45,28 @@ router.get("/tweet", async (req: any, res: any) => {
   }
 });
 
-// Retrieve a list of hashtags used in the top 10 most popular tweets on twitter
-// containing a keyword. Hint: use the result_type=popular
-// a. Inputs: keyword
-// b. Outputs: A list of unique hashtags
+/**
+ * @swagger
+ *
+ * /hashtag:
+ *   get:
+ *     description: Retrieve a list of unique hashtags used in the top 10 most popular tweets on twitter containing a specific keyword
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: keyword
+ *         description: Keyword contained in tweets
+ *         in: query
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: list of unique hashtags
+ *       400:
+ *         description: when request is not valid
+ *       500:
+ *         description: when error from service
+ */
 router.get("/hashtag", async (req: any, res: any) => {
   try {
     const { keyword } = req.query;
@@ -38,13 +78,28 @@ router.get("/hashtag", async (req: any, res: any) => {
   }
 });
 
-// Create a tweet on the 37_developers account. Note: for this step you are not
-// required to implement 3-legged OAuth. This step has been done beforehand and the
-// 37_developers account has already authorized the Twitter app. The Required
-// authentication parameters have been provided below.
-// a. Inputs: text of tweet (max 150 characters)
-// b. Outputs: The tweet should be displayed on the 37_developers timeline, the
-// response from the API should contain only the id of the tweet.
+/**
+ * @swagger
+ *
+ * /tweet:
+ *   post:
+ *     description: Create a tweet on the 37_developers account
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: keyword
+ *         description: text of tweet (max 150 characters)
+ *         in: formData
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: tweet ID
+ *       400:
+ *         description: when request is not valid
+ *       500:
+ *         description: when error from service
+ */
 router.post("/tweet", async (req: any, res: any) => {
   try {
     const id = await createTweet({ text: req.body.text });
