@@ -18,7 +18,7 @@ describe("createResponseModel", () => {
   });
 
   describe("when hashtags", () => {
-    it.only("should return array w/ unique hashtag text", () => {
+    it("should return array w/ unique hashtag text", () => {
       const input = {
         statuses: [
           {

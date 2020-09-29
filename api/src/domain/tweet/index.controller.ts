@@ -5,7 +5,7 @@ import {
   getTweetsListByCriteriaSchema,
   createTweetSchema
 } from "./tweet.schema";
-import { createResponseModel } from "./utils";
+import { createResponseModel, filterResultsByLastHours } from "./utils";
 
 interface IGetTweetsListByCriteria {
   keyword: string;
@@ -21,14 +21,18 @@ export const getTweetsListByCriteria = async (
   const isValidInput = await getTweetsListByCriteriaSchema.isValid(request);
   if (!isValidInput) return Promise.reject({ code: "INPUT_VALIDATION" });
 
-  const url = `/search/tweets.json?${querystring.encode({
-    q: request.keyword,
-    count: 10,
+  const { keyword, lastHours } = request;
+  const MAX_NUMBER_OF_TWEETS = 10;
+  const queryParameters = {
+    q: keyword,
+    count: MAX_NUMBER_OF_TWEETS,
     result_type: "recent"
-  })}`;
-  const results = await callAPI({ url });
+  };
 
-  return (results.statuses || []).map(createResponseModel);
+  const url = `/search/tweets.json?${querystring.encode(queryParameters)}`;
+  const results = await callAPI({ url });
+  const filteredResults = filterResultsByLastHours(results.statuses, lastHours);
+  return filteredResults.map(createResponseModel);
 };
 export const createTweet = async (request: ICreateTweet) => {
   const isValidInput = await createTweetSchema.isValid(request);
