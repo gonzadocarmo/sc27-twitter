@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { TweetsByKeyword } from "./features/tweets-keyword/TweetsKeyboard.container";
+import { HashtagsByKeyword } from "./features/hashtags-keyword/HashtagsKeyword.container";
+import { CreateTweet } from "./features/tweet/Tweet.container";
 
-function App() {
+const moduleStyles = {
+  marginBottom: "5rem"
+};
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ padding: "1rem" }}>
+      <div style={moduleStyles}>
+        <TweetsByKeyword />
+      </div>
+
+      <div style={moduleStyles}>
+        <HashtagsByKeyword />
+      </div>
+
+      <div style={moduleStyles}>
+        <CreateTweet />
+      </div>
     </div>
   );
-}
+};
 
 export default App;
