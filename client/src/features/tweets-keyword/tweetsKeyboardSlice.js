@@ -28,9 +28,10 @@ const { searchInit, searchSuccess, searchFailure } = tweetsKeywordSlice.actions;
 
 export const searchTweets = ({ keyword, lastHours }) => (dispatch) => {
   dispatch(searchInit());
-  callAPI({ url: `/tweet?keyword=${keyword}&lastHours=${lastHours}` })
+  return callAPI({ url: `/tweet?keyword=${keyword}&lastHours=${lastHours}` })
     .then((data) => {
       dispatch(searchSuccess(data));
+      return Promise.resolve();
     })
     .catch((e) => dispatch(searchFailure(e)));
 };

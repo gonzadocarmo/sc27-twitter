@@ -18,7 +18,9 @@ export const TweetsByKeyword = () => {
       <header>Tweets by Keyword</header>
       <section>
         <SearchForm
-          onClickHandler={(request) => dispatch(searchTweets(request))}
+          onClickHandler={(request, setSubmitting) =>
+            dispatch(searchTweets(request)).then((_) => setSubmitting(false))
+          }
         />
       </section>
       <section>

@@ -1,30 +1,78 @@
-import React, { useRef } from "react";
+import React from "react";
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
+import { TextField } from "formik-material-ui";
 
+import { Formik, Form, Field } from "formik";
 import styles from "./TweetsKeyword.module.css";
 
+import * as yup from "yup";
+
+export const searchFormSchema = yup.object().shape({
+  keyword: yup.string().required(),
+  lastHours: yup.number().required().positive()
+});
+
 export const SearchForm = ({ onClickHandler }) => {
-  const keyboardEl = useRef(null);
-  const hoursEl = useRef(null);
+  const initialValues = {
+    lastHours: "",
+    keyword: ""
+  };
+
   return (
-    <form noValidate autoComplete="off" className={styles.form}>
-      <TextField label="Keyword" ref={keyboardEl} />
-      <TextField label="hours ago" type="number" ref={hoursEl} />
-      <Button
-        variant="contained"
-        color="primary"
-        type="submit"
-        onClick={(e) => {
-          e.preventDefault();
-          onClickHandler({
-            keyword: keyboardEl.current.childNodes[1].childNodes[0].value,
-            lastHours: hoursEl.current.childNodes[1].childNodes[0].value
-          });
-        }}
-      >
-        Search
-      </Button>
-    </form>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={searchFormSchema}
+      onSubmit={(values, { setSubmitting }) => {
+        setSubmitting(true);
+        onClickHandler(
+          {
+            keyword: values.keyword,
+            lastHours: values.lastHours
+          },
+          setSubmitting
+        );
+      }}
+    >
+      {({ isSubmitting }) => {
+        return (
+          <Form className={styles.form}>
+            <div>
+              <Field component={TextField} label="Keyword" name="keyword" />
+            </div>
+
+            <div>
+              <Field
+                component={TextField}
+                label="hours ago"
+                type="number"
+                name="lastHours"
+              />
+            </div>
+
+            <div>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                style={{ width: "100%" }}
+                disabled={isSubmitting}
+              >
+                Search
+              </Button>
+            </div>
+            <div>
+              <Button
+                variant="contained"
+                color="secondary"
+                type="reset"
+                style={{ width: "100%" }}
+              >
+                Reset
+              </Button>
+            </div>
+          </Form>
+        );
+      }}
+    </Formik>
   );
 };
