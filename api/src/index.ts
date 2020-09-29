@@ -3,6 +3,7 @@ const app = express();
 const routes = require("./routes");
 const bodyParser = require("body-parser");
 const path = require("path");
+const cors = require("cors");
 
 const swaggerJSDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
@@ -21,6 +22,7 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJSDoc(swaggerOptions);
 
 app.use(bodyParser());
+app.use(cors());
 app.use("/", routes);
 app.listen(PORT, () => console.log(`Listening on port: ${PORT}`));
 
