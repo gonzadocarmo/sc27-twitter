@@ -1,8 +1,10 @@
 import axios from "axios";
 
+const API_PORT = 7777;
+
 export const callAPI = ({ url, method = "GET", data, headers }) => {
   return axios({
-    url: `http://localhost:7777${url}`,
+    url: `http://localhost:${API_PORT}${url}`,
     method,
     data,
     headers
